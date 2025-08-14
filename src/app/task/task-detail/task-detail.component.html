@@ -1,0 +1,114 @@
+<div class="task-container">
+  <div class="task-box">
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="task">
+      <h2>Task Details</h2>
+
+      <!-- Edit Mode -->
+      <form *ngIf="editing" class="task-form">
+        <div class="form-group">
+          <label for="title"><i class="fas fa-heading"></i> Title</label>
+          <input
+            id="title"
+            [(ngModel)]="task.title"
+            name="title"
+            placeholder="Enter task title"
+            class="form-input"
+          >
+        </div>
+        <div class="form-group">
+          <label for="description"><i class="fas fa-align-left"></i> Description</label>
+          <textarea
+            id="description"
+            [(ngModel)]="task.description"
+            name="description"
+            placeholder="Enter task description"
+            class="form-input"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="assigned_to"><i class="fas fa-users"></i> Assigned To</label>
+          <input
+            id="assigned_to"
+            [(ngModel)]="task.assigned_to"
+            name="assigned_to"
+            placeholder="Employee ID(s)"
+            class="form-input"
+          >
+        </div>
+        <div class="form-group">
+          <label for="priority"><i class="fas fa-exclamation-circle"></i> Priority</label>
+          <select id="priority" [(ngModel)]="task.priority" name="priority" class="form-select">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status"><i class="fas fa-tasks"></i> Status</label>
+          <select id="status" [(ngModel)]="task.status" name="status" class="form-select">
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="deadline"><i class="fas fa-calendar-alt"></i> Deadline</label>
+          <input
+            id="deadline"
+            type="datetime-local"
+            [(ngModel)]="task.deadline"
+            name="deadline"
+            class="form-input"
+          >
+        </div>
+        <div class="button-group">
+          <button type="button" class="submit-btn" (click)="updateTask()" [disabled]="loading">
+            <ng-container *ngIf="!loading">
+              <i class="fas fa-save"></i> Update
+            </ng-container>
+            <ng-container *ngIf="loading">
+              <span class="spinner"></span> Updating...
+            </ng-container>
+          </button>
+          <button type="button" class="cancel-btn" (click)="editing=false" [disabled]="loading">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+        <div *ngIf="updateMsg" class="success">{{ updateMsg }}</div>
+      </form>
+
+      <!-- View Mode -->
+      <div *ngIf="!editing" class="task-details">
+        <p><i class="fas fa-heading"></i> <b>Title:</b> {{ task.title }}</p>
+        <p><i class="fas fa-align-left"></i> <b>Description:</b> {{ task.description }}</p>
+        <p><i class="fas fa-users"></i> <b>Assigned To:</b> {{ task.assigned_to }}</p>
+        <p><i class="fas fa-exclamation-circle"></i> <b>Priority:</b> {{ task.priority }}</p>
+        <p><i class="fas fa-tasks"></i> <b>Status:</b> {{ task.status }}</p>
+        <p><i class="fas fa-calendar-alt"></i> <b>Deadline:</b> {{ task.deadline | date:'short' }}</p>
+
+        <div *ngIf="auth.getRole() !== 'Employee'" class="button-group">
+          <button class="submit-btn" (click)="enableEdit()">
+            <i class="fas fa-edit"></i> Edit Task
+          </button>
+        </div>
+
+        <div *ngIf="canEditStatus" class="form-group">
+          <label for="status-update"><i class="fas fa-tasks"></i> Update Status</label>
+          <select
+            id="status-update"
+            [(ngModel)]="task.status"
+            (change)="updateStatus(task.status)"
+            class="form-select"
+            [disabled]="loading"
+          >
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Done</option>
+          </select>
+        </div>
+        <div *ngIf="updateMsg" class="success">{{ updateMsg }}</div>
+      </div>
+    </div>
+  </div>
+</div>

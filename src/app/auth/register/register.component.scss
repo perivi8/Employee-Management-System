@@ -1,0 +1,210 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$background-color: #f8f9fa;
+$text-color: #333;
+$border-color: #dee2e6;
+$error-color: #dc3545;
+$success-color: #28a745;
+$header-height: 60px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.register-container,
+.verify-container {
+  position: absolute;
+  top: $header-height; // Align directly below header
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - #{$header-height});
+  background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+  background-size: cover;
+  background-color: rgba($background-color, 0.7); // Semi-transparent overlay
+}
+
+.register-form,
+.verify-form {
+  background: rgba(255, 255, 255, 0.1); // Semi-transparent white
+  backdrop-filter: blur(10px); // Frosted glass effect
+  -webkit-backdrop-filter: blur(10px); // For Safari support
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 16px;
+    color: $text-color;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 20px;
+
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: $secondary-color;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 10px 10px 35px; // Extra padding for icon
+      font-size: 16px;
+      border: 1px solid $border-color;
+      border-radius: 4px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.8); // Slightly opaque input background
+      transition: border-color 0.3s, background 0.3s;
+
+      &:focus {
+        border-color: $primary-color;
+        background: rgba(255, 255, 255, 1);
+      }
+
+      &::placeholder {
+        color: $secondary-color;
+      }
+    }
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+
+    &:disabled {
+      background: lighten($primary-color, 20%);
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      border: 3px solid $border-color;
+      border-top: 3px solid $primary-color;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+  }
+
+  .resend-section {
+    margin-top: 15px;
+
+    .timer {
+      font-size: 14px;
+      color: $text-color;
+      margin-bottom: 10px;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: $primary-color;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+
+      &:hover {
+        color: darken($primary-color, 10%);
+      }
+
+      &:disabled {
+        color: $secondary-color;
+        cursor: not-allowed;
+      }
+
+      .spinner {
+        border: 3px solid $border-color;
+        border-top: 3px solid $primary-color;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .error {
+    color: $error-color;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .success {
+    color: $success-color;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 576px) {
+  .register-form,
+  .verify-form {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .form-group .form-input {
+    font-size: 14px;
+    padding: 8px 8px 8px 30px;
+  }
+
+  .submit-btn,
+  .resend-section .link-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  p,
+  .resend-section .timer {
+    font-size: 12px;
+  }
+}

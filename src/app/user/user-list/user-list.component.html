@@ -1,0 +1,95 @@
+<div class="user-container">
+  <div class="user-box">
+    <h2>Users</h2>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <span>Loading users...</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fas fa-user"></i> Username</th>
+            <th><i class="fas fa-envelope"></i> Email</th>
+            <th><i class="fas fa-user-tag"></i> Role</th>
+            <th><i class="fas fa-id-badge"></i> Employee ID</th>
+            <th *ngIf="canEditOrDelete()"><i class="fas fa-tools"></i> Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td *ngIf="editingId !== user._id">{{ user.username }}</td>
+            <td *ngIf="editingId !== user._id">{{ user.email }}</td>
+            <td *ngIf="editingId !== user._id">{{ user.role }}</td>
+            <td>{{ user.employee_id || '-' }}</td>
+            <td *ngIf="canEditOrDelete()" class="action-buttons">
+              <button class="action-btn edit-btn" (click)="startEdit(user)" [disabled]="loadingId === user._id">
+                <ng-container *ngIf="loadingId === user._id">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== user._id">
+                  <i class="fas fa-edit"></i> Edit
+                </ng-container>
+              </button>
+              <button class="action-btn delete-btn" (click)="deleteUser(user)" [disabled]="loadingId === user._id">
+                <ng-container *ngIf="loadingId === user._id">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== user._id">
+                  <i class="fas fa-trash"></i> Delete
+                </ng-container>
+              </button>
+            </td>
+          </tr>
+          <!-- Edit row -->
+          <tr *ngIf="editingId">
+            <td>
+              <div class="form-group">
+                <input
+                  [(ngModel)]="editUser.username"
+                  placeholder="Username"
+                  class="form-input"
+                >
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <input
+                  [(ngModel)]="editUser.email"
+                  placeholder="Email"
+                  class="form-input"
+                >
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <select [(ngModel)]="editUser.role" class="form-select">
+                  <option>Admin</option>
+                  <option>Manager</option>
+                  <option>Employee</option>
+                </select>
+              </div>
+            </td>
+            <td></td>
+            <td class="action-buttons">
+              <button class="action-btn save-btn" (click)="saveEdit(getEditingUser())" [disabled]="loadingId === editingId">
+                <ng-container *ngIf="loadingId === editingId">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== editingId">
+                  <i class="fas fa-save"></i> Save
+                </ng-container>
+              </button>
+              <button class="action-btn cancel-btn" (click)="cancelEdit()" [disabled]="loadingId === editingId">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="updateMsg" class="success">{{ updateMsg }}</div>
+  </div>
+</div>

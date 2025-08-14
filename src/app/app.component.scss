@@ -1,0 +1,29 @@
+$primary-color: #007bff;
+$background-color: #f8f9fa;
+$border-color: #dee2e6;
+$header-height: 60px;
+
+.main-content {
+  margin-left: 250px;
+  margin-top: $header-height; // Offset for fixed header
+  padding: 20px;
+  min-height: calc(100vh - #{$header-height});
+  background: #fff;
+  transition: margin-left 0.3s ease-in-out;
+
+  &.sidebar-collapsed {
+    margin-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 200px;
+
+    &.sidebar-collapsed {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding: 10px;
+  }
+}

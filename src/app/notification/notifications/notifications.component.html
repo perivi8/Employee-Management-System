@@ -1,0 +1,8 @@
+<div>
+  <h3>Notifications</h3>
+  <button (click)="clearMessages()" *ngIf="notifications.length">Clear All</button>
+  <p *ngIf="!notifications.length">No notifications.</p>
+  <ul>
+    <li *ngFor="let msg of notifications">{{ msg }}</li>
+  </ul>
+</div>

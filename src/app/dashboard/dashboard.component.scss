@@ -1,0 +1,105 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$background-color: #f8f9fa;
+$text-color: #333;
+$border-color: #dee2e6;
+$header-height: 60px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard-container {
+  position: absolute;
+  top: $header-height; // Align directly below header
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - #{$header-height});
+
+  background: url('https://cdn.pixabay.com/photo/2023/01/28/19/01/bird-7751561_1280.jpg')
+    no-repeat center center fixed;
+  background-size: cover;
+  background-color: rgba($background-color, 0.7);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Dashboard card styling */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.1); // Semi-transparent white
+  backdrop-filter: blur(10px); // Frosted glass effect
+  -webkit-backdrop-filter: blur(10px); // Safari support
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 100%;
+  max-width: 400px; // Same as login form
+  text-align: center;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    background: linear-gradient(
+      to right,
+      $primary-color,
+      darken($primary-color, 10%)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    i {
+      color: $primary-color;
+      font-size: 24px;
+    }
+  }
+
+  p {
+    font-size: 16px;
+    color: $text-color;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    i {
+      color: $primary-color;
+      font-size: 18px;
+    }
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 576px) {
+  .dashboard-card {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .dashboard-card h2 {
+    font-size: 20px;
+    i {
+      font-size: 20px;
+    }
+  }
+
+  .dashboard-card p {
+    font-size: 14px;
+    i {
+      font-size: 16px;
+    }
+  }
+}

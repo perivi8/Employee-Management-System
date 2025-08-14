@@ -1,0 +1,117 @@
+<div class="task-container">
+  <div class="task-box">
+    <h2>Tasks</h2>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <!-- Loading overlay for full table -->
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <span>Loading tasks...</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fas fa-heading"></i> Title</th>
+            <th><i class="fas fa-align-left"></i> Description</th>
+            <th><i class="fas fa-users"></i> Assigned</th>
+            <th><i class="fas fa-exclamation-circle"></i> Priority</th>
+            <th><i class="fas fa-tasks"></i> Status</th>
+            <th><i class="fas fa-calendar-alt"></i> Deadline</th>
+            <th *ngIf="auth.getRole() === 'Employee'"><i class="fas fa-clock"></i> Timer</th>
+            <th *ngIf="canUpdateDelete()"><i class="fas fa-tools"></i> Actions</th>
+            <th *ngIf="auth.getRole() === 'Employee'"><i class="fas fa-tasks"></i> Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let task of tasks">
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.assigned_to }}</td>
+            <td>{{ task.priority }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.deadline | date:'short' }}</td>
+
+            <!-- Timer -->
+            <td *ngIf="auth.getRole() === 'Employee'"
+                [ngStyle]="{
+                  color: completedTaskIds.has(task._id || '') ? 'green' :
+                         isDeadlinePassed(task.deadline) ? 'gray' : 'red',
+                  'font-weight': 'bold'
+                }">
+              {{ getTimeLeft(task) }}
+            </td>
+
+            <!-- Admin/Manager actions -->
+            <td *ngIf="canUpdateDelete()" class="action-buttons">
+              <button class="action-btn update-btn" (click)="updateTask(task)" [disabled]="loadingId === task._id">
+                <ng-container *ngIf="loadingId === task._id">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== task._id">
+                  <i class="fas fa-edit"></i> Update
+                </ng-container>
+              </button>
+              <button class="action-btn delete-btn" (click)="deleteTask(task)" [disabled]="loadingId === task._id">
+                <ng-container *ngIf="loadingId === task._id">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== task._id">
+                  <i class="fas fa-trash"></i> Delete
+                </ng-container>
+              </button>
+            </td>
+
+            <!-- Status dropdown for employee -->
+            <td *ngIf="canEditStatus(task)">
+              <select
+                [value]="task.status"
+                (change)="onStatusChange(task, $event)"
+                class="form-select"
+                [disabled]="loadingId === task._id"
+              >
+                <option *ngFor="let s of statusOptions">{{ s }}</option>
+              </select>
+              <span *ngIf="loadingId === task._id" class="spinner"></span>
+            </td>
+
+            <!-- Complete button/tick -->
+            <td *ngIf="auth.getRole() === 'Employee'">
+              <span *ngIf="completedTaskIds.has(task._id || '')"
+                    class="completed-icon">
+                <i class="fas fa-check-circle"></i>
+              </span>
+              <button *ngIf="!completedTaskIds.has(task._id || '') && task.status === 'Done'"
+                      class="action-btn complete-btn"
+                      (click)="completeTask(task)"
+                      [disabled]="loadingId === task._id">
+                <ng-container *ngIf="loadingId === task._id">
+                  <span class="spinner"></span>
+                </ng-container>
+                <ng-container *ngIf="loadingId !== task._id">
+                  <i class="fas fa-check"></i> Complete
+                </ng-container>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div *ngIf="confirmationTask" class="popup-backdrop">
+      <div class="popup">
+        <h4>{{ confirmationMessage }}</h4>
+        <div class="popup-buttons">
+          <button class="cancel-btn" (click)="cancelConfirmation()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button class="submit-btn" (click)="confirmStatusChange()">
+            <i class="fas fa-check"></i> {{ confirmationActionText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

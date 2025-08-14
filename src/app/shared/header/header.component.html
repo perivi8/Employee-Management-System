@@ -1,0 +1,98 @@
+<header class="app-header" role="banner">
+  <div class="header-row">
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggler" (click)="triggerSidebarToggle()" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+      <span *ngIf="sidebarCollapsed && (hasNew$ | async)" class="red-dot" aria-hidden="true"></span>
+    </button>
+
+    <!-- Title -->
+    <h1 class="title">
+      <span class="desktop-title">Employee Management System</span>
+      <span class="mobile-title">EMS</span>
+    </h1>
+
+    <!-- Navigation Actions -->
+    <nav class="header-actions" aria-label="Header actions">
+      <!-- Mail Dropdown -->
+      <div class="mail-wrapper" (click)="toggleMailDropdown($event)" aria-haspopup="true" [attr.aria-expanded]="showMailDropdown">
+        <!-- Google-style Mail icon via Material Symbols -->
+        <span class="material-symbols-rounded mail-icon" aria-hidden="true" style="margin-top: 10px;">mail</span>
+
+        <!-- Use [attr.aria-label] to avoid property binding error -->
+        <span
+          *ngIf="unreadMailCount > 0"
+          class="badge"
+          [attr.aria-label]="unreadMailCount + ' unread emails'">
+          {{ unreadMailCount }}
+        </span>
+
+        <div class="mail-dropdown" *ngIf="showMailDropdown">
+          <div class="mail-dropdown-header">
+            <strong>Emails</strong>
+            <button class="refresh-btn" (click)="refreshEmails($event)" aria-label="Refresh emails">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+
+          <div *ngIf="!emailNotifications.length" class="empty">No emails.</div>
+
+          <div *ngFor="let m of emailNotifications" class="mail-item" [class.unread]="!m.read">
+            <div class="mail-top">
+              <span class="status-chip" [ngClass]="statusClass(m.status)">{{ m.status || 'Info' }}</span>
+              <small class="mail-time">{{ m.timestamp | date:'short' }}</small>
+              <button class="dismiss-btn" (click)="dismissEmail(m._id, $event)" aria-label="Dismiss email">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="mail-subject" [title]="m.subject">{{ m.subject }}</div>
+
+            <div class="mail-message">
+              <ng-container *ngIf="m.title">
+                <div><b>Task:</b> {{ m.title }}</div>
+              </ng-container>
+              <ng-container *ngIf="m.username || m.employee_id">
+                <div class="byline">
+                  <b>By:</b>
+                  <span *ngIf="m.username">{{ m.username }}</span>
+                  <span *ngIf="m.username && m.employee_id"> - </span>
+                  <span *ngIf="m.employee_id">{{ m.employee_id }}</span>
+                </div>
+              </ng-container>
+              <div class="body-preview">{{ m.message }}</div>
+            </div>
+
+            <div class="mail-meta">
+              <span class="from-text" [title]="m.from">{{ m.from }}</span>
+              <a *ngIf="m.task_id" routerLink="/tasks" class="view-link">View Task</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile -->
+      <div class="user-profile" (click)="toggleMenu($event)" tabindex="0" role="button" aria-haspopup="true" [attr.aria-expanded]="showMenu">
+        <span class="user-info">
+          <i class="fas fa-briefcase role-icon role-color"></i> {{ auth.getRole() }} -
+          <i class="fas fa-user user-color role-icon"></i> {{ auth.getUsername() }}
+        </span>
+      </div>
+
+      <!-- Logout Dropdown -->
+      <div *ngIf="showMenu" class="dropdown">
+        <button (click)="logout()" [disabled]="loggingOut" aria-label="Logout">
+          <i class="fas fa-sign-out-alt logout-color"></i> Logout
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Logout Loading Overlay -->
+<div class="logout-overlay" *ngIf="loggingOut" role="dialog" aria-live="assertive" aria-label="Logging out">
+  <div class="logout-content">
+    <div class="logout-spinner"></div>
+    <p>Logging you out...</p>
+  </div>
+</div>

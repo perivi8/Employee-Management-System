@@ -1,0 +1,90 @@
+<div class="task-container">
+  <div class="task-box">
+    <h2>Create New Task</h2>
+    <form (ngSubmit)="onSubmit()" class="task-form">
+      <div class="form-group">
+        <label for="title"><i class="fas fa-heading"></i> Title</label>
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="Enter task title"
+          required
+          class="form-input"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="description"><i class="fas fa-align-left"></i> Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="description"
+          name="description"
+          placeholder="Enter task description"
+          required
+          class="form-input"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="assigned_to"><i class="fas fa-users"></i> Assign To Employee(s)</label>
+        <select
+          id="assigned_to"
+          multiple
+          size="6"
+          [(ngModel)]="assigned_to"
+          name="assigned_to"
+          class="form-select"
+        >
+          <option *ngFor="let emp of employeeList" [value]="emp.employee_id">
+            {{ emp.employee_id }} - {{ emp.username }}
+          </option>
+        </select>
+        <p class="hint">Hold CTRL (or CMD on Mac) to select multiple employees.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="priority"><i class="fas fa-exclamation-circle"></i> Priority</label>
+        <select id="priority" [(ngModel)]="priority" name="priority" class="form-select">
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="status"><i class="fas fa-tasks"></i> Status</label>
+        <select id="status" [(ngModel)]="status" name="status" class="form-select">
+          <option>To Do</option>
+          <option>In Progress</option>
+          <option>Done</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="deadline"><i class="fas fa-calendar-alt"></i> Deadline</label>
+        <input
+          id="deadline"
+          type="datetime-local"
+          [(ngModel)]="deadline"
+          name="deadline"
+          required
+          class="form-input"
+        >
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        <ng-container *ngIf="!loading">
+          <i class="fas fa-plus-circle"></i> Create Task
+        </ng-container>
+        <ng-container *ngIf="loading">
+          <span class="spinner"></span> Creating...
+        </ng-container>
+      </button>
+
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="success" class="success">{{ success }}</div>
+    </form>
+  </div>
+</div>
