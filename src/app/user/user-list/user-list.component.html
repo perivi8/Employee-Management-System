@@ -1,7 +1,9 @@
 <div class="user-container">
   <div class="user-box">
     <h2>Users</h2>
+
     <div *ngIf="error" class="error">{{ error }}</div>
+
     <div *ngIf="loading" class="loading-overlay">
       <div class="spinner"></div>
       <span>Loading users...</span>
@@ -43,24 +45,17 @@
               </button>
             </td>
           </tr>
+
           <!-- Edit row -->
           <tr *ngIf="editingId">
             <td>
               <div class="form-group">
-                <input
-                  [(ngModel)]="editUser.username"
-                  placeholder="Username"
-                  class="form-input"
-                >
+                <input [(ngModel)]="editUser.username" placeholder="Username" class="form-input">
               </div>
             </td>
             <td>
               <div class="form-group">
-                <input
-                  [(ngModel)]="editUser.email"
-                  placeholder="Email"
-                  class="form-input"
-                >
+                <input [(ngModel)]="editUser.email" placeholder="Email" class="form-input">
               </div>
             </td>
             <td>
@@ -90,6 +85,23 @@
         </tbody>
       </table>
     </div>
+
     <div *ngIf="updateMsg" class="success">{{ updateMsg }}</div>
+
+    <!-- Delete Confirmation Popup -->
+    <div *ngIf="deleteConfirmationUser" class="popup-backdrop">
+      <div class="popup">
+        <h4>Are you sure you want to delete <b>{{ deleteConfirmationUser.username }}</b>?</h4>
+        <div class="popup-buttons">
+          <button class="confirm-btn" (click)="confirmDelete()">
+            <i class="fas fa-trash"></i> Yes, Delete
+          </button>
+          <button class="cancel-btn" (click)="cancelDelete()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

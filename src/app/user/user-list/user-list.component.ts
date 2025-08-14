@@ -13,13 +13,14 @@ export class UserListComponent implements OnInit {
   editingId: string | null = null;
   editUser = { username: '', email: '', role: '' };
   updateMsg = '';
-  loading = false; // Global loading for fetching users
-  loadingId: string | null = null; // Row-specific loading
-  deleteConfirmationUser: any | null = null; // For delete confirmation popup
+  loading = false;
+  loadingId: string | null = null;
+  deleteConfirmationUser: any | null = null;
 
   constructor(private userService: UserService, public auth: AuthService) {}
 
   ngOnInit() {
+    console.log('Current role:', this.auth.getRole()); // For debugging
     this.refresh();
   }
 
@@ -37,9 +38,11 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  // Temporarily allow all users to edit/delete for testing
   canEditOrDelete(): boolean {
-    const role = this.auth.getRole();
-    return role === 'Admin' || role === 'Manager';
+    return true; // Change back to your role check when ready
+    // const role = this.auth.getRole();
+    // return role === 'Admin' || role === 'Manager';
   }
 
   startEdit(user: any) {
@@ -76,7 +79,8 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(user: any) {
-    this.deleteConfirmationUser = user; // Show styled popup instead of confirm
+    console.log('Delete clicked for:', user); // Debugging
+    this.deleteConfirmationUser = user;
   }
 
   confirmDelete() {

@@ -16,8 +16,8 @@ $header-height: 60px;
 }
 
 .user-container {
-  margin-top: 0px; // Position below fixed header
-  margin-left: 0px; // Account for sidebar
+  margin-top: 0px;
+  margin-left: 0px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -31,7 +31,6 @@ $header-height: 60px;
 
   @media (max-width: 768px) {
     margin-left: 200px;
-
     &.sidebar-collapsed {
       margin-left: 0;
     }
@@ -43,12 +42,12 @@ $header-height: 60px;
 }
 
 .user-box {
-  background: linear-gradient(135deg, #ffffff, #f9f9f9); // Subtle gradient
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 1000px; // Slightly narrower than task-list
+  max-width: 1000px;
   margin: 20px;
   border: 1px solid $border-color;
 
@@ -78,7 +77,7 @@ $header-height: 60px;
   }
 
   .table-wrapper {
-    overflow-x: auto; // Enable horizontal scrolling on mobile
+    overflow-x: auto;
   }
 
   table {
@@ -109,7 +108,6 @@ $header-height: 60px;
 
     tr {
       transition: background 0.2s;
-
       &:hover {
         background: rgba($primary-color, 0.05);
       }
@@ -182,7 +180,6 @@ $header-height: 60px;
   .edit-btn {
     background: linear-gradient(to right, $primary-color, darken($primary-color, 10%));
     color: white;
-
     &:disabled {
       background: lighten($primary-color, 20%);
     }
@@ -191,7 +188,6 @@ $header-height: 60px;
   .delete-btn {
     background: linear-gradient(to right, $error-color, darken($error-color, 10%));
     color: white;
-
     &:disabled {
       background: lighten($error-color, 20%);
     }
@@ -200,7 +196,6 @@ $header-height: 60px;
   .save-btn {
     background: linear-gradient(to right, $success-color, darken($success-color, 10%));
     color: white;
-
     &:disabled {
       background: lighten($success-color, 20%);
     }
@@ -209,7 +204,6 @@ $header-height: 60px;
   .cancel-btn {
     background: linear-gradient(to right, $secondary-color, darken($secondary-color, 10%));
     color: white;
-
     &:disabled {
       background: lighten($secondary-color, 20%);
     }
@@ -254,6 +248,7 @@ $header-height: 60px;
     }
   }
 
+  /* DELETE CONFIRMATION POPUP */
   .popup-backdrop {
     position: fixed;
     top: 0;
@@ -328,32 +323,27 @@ $header-height: 60px;
   100% { transform: rotate(360deg); }
 }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .user-container {
     margin-left: 200px;
-
     &.sidebar-collapsed {
       margin-left: 0;
     }
   }
-
   .user-box {
     max-width: 90%;
     padding: 20px;
     margin: 15px;
   }
-
   .user-box h2 {
     font-size: 22px;
   }
-
   table {
     font-size: 12px;
-
     th, td {
       padding: 10px;
     }
-
     .form-group {
       .form-input,
       .form-select {
@@ -361,7 +351,6 @@ $header-height: 60px;
         padding: 6px;
       }
     }
-
     .action-btn {
       font-size: 12px;
       padding: 6px 10px;
@@ -373,11 +362,9 @@ $header-height: 60px;
   .user-container {
     margin-left: 0;
   }
-
   .user-box {
     margin: 10px;
   }
-
   .action-buttons {
     flex-direction: column;
     gap: 6px;
