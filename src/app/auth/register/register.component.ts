@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { timer } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +24,8 @@ export class RegisterComponent {
   loadingVerify = false;
   loadingResend = false;
 
+  private timerSub?: Subscription;
+
   constructor(private auth: AuthService, private router: Router) {}
 
   onSubmit() {
@@ -36,6 +38,7 @@ export class RegisterComponent {
     this.success = '';
     this.loadingRegister = true;
 
+    // role is optional; backend infers Admin/Manager by password prefix if needed
     this.auth.register(this.username, this.email, this.password).subscribe({
       next: () => {
         this.loadingRegister = false;
@@ -45,7 +48,7 @@ export class RegisterComponent {
       },
       error: (err: any) => {
         this.loadingRegister = false;
-        this.error = err.error?.msg || 'Failed to register. User may already exist.';
+        this.error = err?.error?.msg || 'Failed to register. User may already exist.';
       }
     });
   }
@@ -53,17 +56,18 @@ export class RegisterComponent {
   startTimer() {
     this.canResend = false;
     this.timerValue = 30;
-    const t = timer(0, 1000).subscribe(() => {
+    this.timerSub?.unsubscribe();
+    this.timerSub = timer(0, 1000).subscribe(() => {
       this.timerValue--;
       if (this.timerValue <= 0) {
         this.canResend = true;
-        t.unsubscribe();
+        this.timerSub?.unsubscribe();
       }
     });
   }
 
   resendCode() {
-    if (!this.canResend) return;
+    if (!this.canResend || !this.email) return;
     this.loadingResend = true;
 
     this.auth.resendCode(this.email).subscribe({
@@ -72,9 +76,9 @@ export class RegisterComponent {
         this.success = 'New code sent!';
         this.startTimer();
       },
-      error: () => {
+      error: (err) => {
         this.loadingResend = false;
-        this.error = 'Failed to resend code.';
+        this.error = err?.error?.msg || 'Failed to resend code.';
       }
     });
   }
@@ -82,6 +86,10 @@ export class RegisterComponent {
   verifyCode() {
     if (!this.verificationCode) {
       this.error = 'Please enter the verification code.';
+      return;
+    }
+    if (!this.email) {
+      this.error = 'Missing email for verification.';
       return;
     }
 
@@ -96,8 +104,12 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.loadingVerify = false;
-        this.error = err.error?.msg || 'Verification failed.';
+        this.error = err?.error?.msg || 'Verification failed.';
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.timerSub?.unsubscribe();
   }
 }

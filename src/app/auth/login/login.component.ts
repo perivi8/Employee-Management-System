@@ -20,15 +20,18 @@ export class LoginComponent {
     this.error = '';
     this.showOverlay = true;
 
+    // Expecting login response to include: token, refresh_token, role, username, employee_id
     this.auth.login(this.email, this.password).subscribe({
       next: (res) => {
-        this.auth.setToken(res.token, res.role, res.username, res.employee_id);
+        // IMPORTANT: store refresh_token as 5th argument
+        this.auth.setToken(res.token, res.role, res.username, res.employee_id, res.refresh_token);
         this.router.navigate(['/']);
         this.showOverlay = false;
       },
-      error: () => {
+      error: (err) => {
         this.showOverlay = false;
-        this.error = 'Invalid email or password';
+        // Show backend message if present
+        this.error = err?.error?.msg || 'Invalid email or password';
       }
     });
   }
@@ -40,6 +43,6 @@ export class LoginComponent {
     setTimeout(() => {
       this.router.navigate(['/register']);
       this.showOverlay = false;
-    }, 500);
+    }, 300);
   }
 }
