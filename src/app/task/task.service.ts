@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Task } from '../models/task.model';  // <-- Make sure this exists and is correctly defined
+import { Task } from '../models/task.model';
 
 @Injectable()
 export class TaskService {
@@ -30,5 +30,10 @@ export class TaskService {
 
   completeTask(id: string): Observable<{ msg: string }> {
     return this.http.post<{ msg: string }>(`${environment.apiUrl}/tasks/complete/${id}`, {});
+  }
+
+  // NEW: mark a task as overdue and notify admins/managers
+  markOverdue(id: string): Observable<{ msg: string }> {
+    return this.http.post<{ msg: string }>(`${environment.apiUrl}/tasks/mark-overdue/${id}`, {});
   }
 }

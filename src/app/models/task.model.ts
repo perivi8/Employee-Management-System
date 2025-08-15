@@ -4,7 +4,7 @@ export interface Task {
   description: string;
   assigned_to: string;
   priority: string;
-  status: string;
+  status: string; // Now may also be 'Overdue'
   deadline: string;
   created_by?: string;
   created_at?: string;

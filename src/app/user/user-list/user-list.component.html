@@ -1,6 +1,6 @@
 <div class="user-container">
   <div class="user-box">
-    <h2>Users</h2>
+    <h2>Employess List</h2>
 
     <div *ngIf="error" class="error">{{ error }}</div>
 
@@ -17,6 +17,7 @@
             <th><i class="fas fa-envelope"></i> Email</th>
             <th><i class="fas fa-user-tag"></i> Role</th>
             <th><i class="fas fa-id-badge"></i> Employee ID</th>
+            <!-- ✅ Only show Actions column if Admin or Manager -->
             <th *ngIf="canEditOrDelete()"><i class="fas fa-tools"></i> Actions</th>
           </tr>
         </thead>
@@ -26,6 +27,7 @@
             <td *ngIf="editingId !== user._id">{{ user.email }}</td>
             <td *ngIf="editingId !== user._id">{{ user.role }}</td>
             <td>{{ user.employee_id || '-' }}</td>
+            <!-- ✅ Only Admin or Manager see edit/delete buttons -->
             <td *ngIf="canEditOrDelete()" class="action-buttons">
               <button class="action-btn edit-btn" (click)="startEdit(user)" [disabled]="loadingId === user._id">
                 <ng-container *ngIf="loadingId === user._id">
@@ -68,7 +70,7 @@
               </div>
             </td>
             <td></td>
-            <td class="action-buttons">
+            <td class="action-buttons" *ngIf="canEditOrDelete()">
               <button class="action-btn save-btn" (click)="saveEdit(getEditingUser())" [disabled]="loadingId === editingId">
                 <ng-container *ngIf="loadingId === editingId">
                   <span class="spinner"></span>
@@ -102,6 +104,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

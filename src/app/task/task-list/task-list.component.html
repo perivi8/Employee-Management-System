@@ -37,6 +37,7 @@
             <td *ngIf="auth.getRole() === 'Employee'"
                 [ngStyle]="{
                   color: completedTaskIds.has(task._id || '') ? 'green' :
+                         overdueTaskIds.has(task._id || '') ? 'red' :
                          isDeadlinePassed(task.deadline) ? 'gray' : 'red',
                   'font-weight': 'bold'
                 }">
@@ -76,13 +77,19 @@
               <span *ngIf="loadingId === task._id" class="spinner"></span>
             </td>
 
-            <!-- Complete button/tick -->
+            <!-- Overdue or Completed icon / Complete button -->
             <td *ngIf="auth.getRole() === 'Employee'">
               <span *ngIf="completedTaskIds.has(task._id || '')"
-                    class="completed-icon">
+                    class="completed-icon"
+                    style="color: green;">
                 <i class="fas fa-check-circle"></i>
               </span>
-              <button *ngIf="!completedTaskIds.has(task._id || '') && task.status === 'Done'"
+              <span *ngIf="overdueTaskIds.has(task._id || '')"
+                    class="completed-icon"
+                    style="color: red;">
+                <i class="fas fa-times-circle"></i>
+              </span>
+              <button *ngIf="!completedTaskIds.has(task._id || '') && !overdueTaskIds.has(task._id || '') && task.status === 'Done'"
                       class="action-btn complete-btn"
                       (click)="completeTask(task)"
                       [disabled]="loadingId === task._id">

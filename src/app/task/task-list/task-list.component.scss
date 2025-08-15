@@ -16,8 +16,8 @@ $header-height: 60px;
 }
 
 .task-container {
-  margin-top: 0px; // Position below fixed header
-  margin-left: 0px; // Account for sidebar
+  margin-top: 0px;
+  margin-left: 0px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -31,7 +31,6 @@ $header-height: 60px;
 
   @media (max-width: 768px) {
     margin-left: 200px;
-
     &.sidebar-collapsed {
       margin-left: 0;
     }
@@ -43,12 +42,12 @@ $header-height: 60px;
 }
 
 .task-box {
-  background: linear-gradient(135deg, #ffffff, #f9f9f9); // Subtle gradient
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 1200px; // Wider for table
+  max-width: 1200px;
   margin: 20px;
   border: 1px solid $border-color;
 
@@ -71,7 +70,7 @@ $header-height: 60px;
   }
 
   .table-wrapper {
-    overflow-x: auto; // Enable horizontal scrolling on mobile
+    overflow-x: auto;
   }
 
   table {
@@ -79,7 +78,8 @@ $header-height: 60px;
     border-collapse: collapse;
     font-size: 14px;
 
-    th, td {
+    th,
+    td {
       padding: 12px;
       text-align: left;
       border-bottom: 1px solid $border-color;
@@ -114,7 +114,6 @@ $header-height: 60px;
     }
 
     .completed-icon {
-      color: $success-color;
       font-size: 1.5em;
       display: flex;
       justify-content: center;
@@ -337,7 +336,8 @@ $header-height: 60px;
   table {
     font-size: 12px;
 
-    th, td {
+    th,
+    td {
       padding: 10px;
     }
 

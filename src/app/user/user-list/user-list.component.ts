@@ -38,11 +38,10 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  // Temporarily allow all users to edit/delete for testing
+  // ✅ Only allow Admin/Manager to edit/delete
   canEditOrDelete(): boolean {
-    return true; // Change back to your role check when ready
-    // const role = this.auth.getRole();
-    // return role === 'Admin' || role === 'Manager';
+    const role = this.auth.getRole();
+    return role === 'Admin' || role === 'Manager';
   }
 
   startEdit(user: any) {

@@ -14,13 +14,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   error = '';
   statusOptions = ['To Do', 'In Progress', 'Done'];
-
   loading = false;
   loadingId: string | null = null;
-
   completedTaskIds = new Set<string>();
+  overdueTaskIds = new Set<string>();
   timerInterval: any;
-
   confirmationTask: Task | null = null;
   confirmationStatus: string = '';
   confirmationMessage: string = '';
@@ -36,6 +34,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.refresh();
     this.timerInterval = setInterval(() => {
+      this.checkOverdues();
       this.tasks = [...this.tasks];
     }, 1000);
   }
@@ -52,9 +51,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
       next: (res: Task[]) => {
         this.tasks = res;
         this.completedTaskIds.clear();
+        this.overdueTaskIds.clear();
         res.forEach(task => {
           if (task.status === 'Done') {
             this.completedTaskIds.add(task._id || '');
+          }
+          // If backend has already marked as Overdue, reflect it in UI
+          if (task.status === 'Overdue') {
+            this.overdueTaskIds.add(task._id || '');
           }
         });
         this.loading = false;
@@ -66,17 +70,42 @@ export class TaskListComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Detect newly overdue tasks and notify backend once
+  checkOverdues(): void {
+    const now = new Date().getTime();
+    this.tasks.forEach(task => {
+      const id = task._id || '';
+      const isCompleted = this.completedTaskIds.has(id);
+      const deadlineMs = task.deadline ? new Date(task.deadline).getTime() : Infinity;
+      const isOverdueNow = !isCompleted && deadlineMs < now;
+
+      if (isOverdueNow && !this.overdueTaskIds.has(id)) {
+        this.overdueTaskIds.add(id);
+        // Tell backend to mark overdue and send email; ignore response here
+        this.taskService.markOverdue(id).subscribe({
+          next: () => {
+            // Optionally refresh to pull backend 'Overdue' status
+            this.refresh();
+          },
+          error: () => {
+            // Silent fail to avoid spamming user alerts
+          }
+        });
+      }
+    });
+  }
+
   canEditStatus(task: Task): boolean {
     return (
       this.auth.getRole() === 'Employee' &&
       task.assigned_to === this.auth.getEmployeeId() &&
-      task.status !== 'Done'
+      task.status !== 'Done' &&
+      !this.overdueTaskIds.has(task._id || '')
     );
   }
 
   onStatusChange(task: Task, event: Event): void {
     const newStatus = (event.target as HTMLSelectElement).value;
-
     if (newStatus === 'Done') {
       this.confirmationMessage = 'Are you sure you completed the task?';
       this.confirmationActionText = 'Submit';
@@ -87,7 +116,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
       this.updateStatus(task, newStatus);
       return;
     }
-
     this.confirmationTask = task;
     this.confirmationStatus = newStatus;
   }
@@ -106,7 +134,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   updateStatus(task: Task, status: string): void {
     this.loadingId = task._id || null;
-
     if (status === 'Done') {
       this.taskService.completeTask(task._id || '').subscribe({
         next: () => {
@@ -126,7 +153,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
       });
       return;
     }
-
     this.taskService.updateTask(task._id || '', { status }).subscribe({
       next: () => {
         this.loadingId = null;
@@ -134,16 +160,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
           this.completedTaskIds.add(task._id || '');
         }
         this.refresh();
-
-        if (
-          status === 'Done' &&
-          this.auth.getRole() === 'Employee' &&
-          task.assigned_to === this.auth.getEmployeeId()
-        ) {
-          this.notificationService.push(
-            `Task "${task.title}" marked Done by ${this.auth.getEmployeeId()} - ${this.auth.getUsername()}`
-          );
-        }
       },
       error: () => {
         this.loadingId = null;
@@ -179,7 +195,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   completeTask(task: Task): void {
     this.loadingId = task._id || null;
-
     this.taskService.completeTask(task._id || '').subscribe({
       next: () => {
         this.loadingId = null;
@@ -202,8 +217,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const deadline = new Date(deadlineStr);
     const now = new Date();
     const ms = deadline.getTime() - now.getTime();
-    if (ms <= 0) return 'Deadline passed';
-
+    if (ms <= 0) return 'Overdue';
     const hours = Math.floor(ms / (1000 * 3600));
     const mins = Math.floor((ms / (1000 * 60)) % 60);
     const secs = Math.floor((ms / 1000) % 60);

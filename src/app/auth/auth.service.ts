@@ -9,6 +9,7 @@ export class AuthService {
   private roleKey = 'user_role';
   private usernameKey = 'username';
   private empIdKey = 'employee_id';
+
   private _isAuthenticated = new BehaviorSubject<boolean>(!!localStorage.getItem(this.tokenKey));
   public isAuthenticated$ = this._isAuthenticated.asObservable();
 
